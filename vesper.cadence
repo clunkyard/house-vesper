@@ -1,0 +1,88 @@
+# Vesper, of Cinder Abbey: patrols, locks on and circles at a middle range,
+# and breaks away for a few seconds when its battery runs low. It steps out
+# of the storm and keeps inside the safe zone. Its coach turns four dials
+# between ticks. Each reads 0 until the coach sets it, and 0 is the robot's
+# own sound baseline; each runs from -1 to 1.
+#
+#   param.aggression  closes the range (1, about 170) or opens it (-1, about 430)
+#   param.reach       how far it fires from: 1 adds 250, -1 takes 250 off
+#   param.power       heavier (1) or lighter (-1) shots than the range suggests
+#   param.patience    breaks away sooner (-1, at half battery) or later (1, almost empty)
+bot Vesper
+modes 2d
+rulesets classic
+initial search
+
+state search
+  each drive 0.6 - 0.3 * (battery-fraction < 0.25)
+  each turn 0.25
+  each scan-heading scan-heading + 36 * (not contact)
+  each scan-arc 40
+  when storm-distance < 60 -> storm
+  when zone-active and zone-distance > zone-radius - 60 -> home
+  when contact -> track
+  when cue-present -> listen
+end
+
+state listen
+  each drive 0.6 - 0.3 * (battery-fraction < 0.25)
+  each turn clamp(angle(cue-bearing, heading) / 45, -1, 1)
+  each scan-heading cue-bearing + wave(14, cue-error + 10)
+  each scan-arc 30
+  when storm-distance < 60 -> storm
+  when zone-active and zone-distance > zone-radius - 60 -> home
+  when contact -> track
+  when not cue-present -> search
+end
+
+state track
+  each turn clamp(angle(bearing + 90 - clamp((range - (300 - 130 * param.aggression)) * 0.4, -60, 60), heading) / 45, -1, 1)
+  each drive 0.5 - 0.25 * (battery-fraction < 0.25)
+  each aim-heading bearing
+  each scan-heading bearing
+  each scan-arc 20
+  each set shot clamp((range - shot-speed-base) / shot-speed-per-power + param.power, power-min, power-max)
+  each power shot
+  each fire cooldown == 0 and abs(aim-error) < 3 and range < 520 + 250 * param.reach and battery >= shot-cost-base + shot-cost-per-power * shot + 10
+  when storm-distance < 60 -> storm
+  when zone-active and zone-distance > zone-radius - 60 -> home
+  when battery-fraction < 0.3 - 0.2 * param.patience -> recover
+  when not contact for 6 -> search
+end
+
+# Out of battery: run straight away from the target and let it refill.
+state recover
+  each turn clamp(angle(bearing + 180, heading) / 40, -1, 1)
+  each drive 0.4
+  each scan-heading bearing * contact + (scan-heading + 36) * (not contact)
+  each scan-arc 30
+  when storm-distance < 60 -> storm
+  when zone-active and zone-distance > zone-radius - 60 -> home
+  when battery-fraction > 0.6 -> search
+  after 80 -> search
+end
+
+state storm
+  # Out across the storm's path, on the side away from its centre: square
+  # to its heading, leaning a third of the way to straight out.
+  each set ea storm-bearing + 180
+  each set ep storm-heading + 90 * clamp(angle(ea, storm-heading) * 100, -1, 1)
+  each set esc ep + angle(ea, ep) / 3
+  each turn clamp(angle(esc, heading) / 30, -1, 1)
+  each drive 1
+  each aim-heading bearing
+  each scan-heading bearing * contact + (scan-heading + 36) * (not contact)
+  each scan-arc 40 - 20 * contact
+  each fire contact and cooldown == 0 and abs(aim-error) < 3 and battery >= shot-cost-base + shot-cost-per-power + 10
+  when storm-distance > 100 -> search
+end
+
+state home
+  each turn clamp(angle(zone-bearing, heading) / 30, -1, 1)
+  each drive 0.8
+  each aim-heading bearing
+  each scan-heading bearing * contact + (scan-heading + 36) * (not contact)
+  each scan-arc 40 - 20 * contact
+  each fire contact and cooldown == 0 and abs(aim-error) < 3 and battery >= shot-cost-base + shot-cost-per-power + 10
+  when zone-distance < zone-radius - 120 -> search
+end

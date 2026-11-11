@@ -1,0 +1,63 @@
+{
+  "v": 1,
+  "repository": "clunkyard/house-vesper",
+  "source": {
+    "botId": "79f64dd9-f1e1-4712-abb7-ab821857a9de",
+    "revisionId": "5a33a02a-d514-49d9-ae40-583fb0494818",
+    "manifestHash": "d42a75d454755e561e940379f0b1413f07f912df58cc03ca583865900d73f929"
+  },
+  "visibleManifestHash": "d42a75d454755e561e940379f0b1413f07f912df58cc03ca583865900d73f929",
+  "language": "cadence",
+  "sourceFiles": [
+    {
+      "path": "bot.json",
+      "mode": 420,
+      "size": 1013,
+      "sha256": "9e0fe97fa2c0e66c2bc1205832456ccf257ff5fa71613037841a4b6265e422fb"
+    },
+    {
+      "path": "vesper.cadence",
+      "mode": 384,
+      "size": 3634,
+      "sha256": "4b92c7a0be7d171891059bae5b64b7fe3c291e272a18193aed0d3d0b60249eb7"
+    }
+  ],
+  "directories": [],
+  "managed": [
+    {
+      "path": ".clunkyard-source.json",
+      "sha256": "133ab693cd6e7a4a82fdd46f1bee0adc3722830140b268376d1910681f9e5f05",
+      "mode": 420
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "e8b41e5528b2d3a8ae4c5dabfcd32ef50c05fff41de096c3701059b5c68a80db",
+      "mode": 420
+    },
+    {
+      "path": "bot.json",
+      "sha256": "9e0fe97fa2c0e66c2bc1205832456ccf257ff5fa71613037841a4b6265e422fb",
+      "mode": 420
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "652cbd0ba5e21c5b7ee7a52b539cc9087b38b1bfc3ae0baacc6828c8dfdf2e95",
+      "mode": 420
+    },
+    {
+      "path": "Makefile",
+      "sha256": "b41bef136a1fec767be62431121a98d96259ccd8415fc3d71665b22efcd8f79d",
+      "mode": 420
+    },
+    {
+      "path": "README.md",
+      "sha256": "9529154939bce0eab84e6abcb407350ccf979585f9d2a2e1e5cde23f4b815259",
+      "mode": 420
+    },
+    {
+      "path": "vesper.cadence",
+      "sha256": "4b92c7a0be7d171891059bae5b64b7fe3c291e272a18193aed0d3d0b60249eb7",
+      "mode": 384
+    }
+  ]
+}
